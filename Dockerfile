@@ -1,17 +1,18 @@
-FROM golang:1.24-alpine AS builder
+# --- Deps Stage ---
+# This stage is dedicated to downloading dependencies and is cached separately.
+FROM golang:1.24-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache git
 COPY go.mod go.sum ./
 RUN go mod download
-COPY . .
 
+FROM golang:1.24-alpine AS builder
+WORKDIR /app
+COPY --from=deps /go/pkg/mod /go/pkg/mod
+COPY . .
 RUN go build -o /bin/server ./cmd/server
 
 FROM gcr.io/distroless/static-debian12 AS runner
 COPY --from=builder /bin/server /
-
-# Expose the port the server listens on. This is for documentation purposes.
 EXPOSE 50051
-
-# Set the default command to run when the container starts.
 CMD ["/server"]
