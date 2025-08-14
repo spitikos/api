@@ -9,3 +9,9 @@ RUN go build -o /bin/server ./cmd/server
 
 FROM gcr.io/distroless/static-debian12 AS runner
 COPY --from=builder /bin/server /
+
+# Expose the port the server listens on. This is for documentation purposes.
+EXPOSE 50051
+
+# Set the default command to run when the container starts.
+CMD ["/server"]
