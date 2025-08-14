@@ -5,7 +5,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
-RUN go build -o /bin/prometheus-proxy ./cmd/prometheus_proxy
+RUN go build -o /bin/server ./cmd/server
 
 FROM gcr.io/distroless/static-debian12 AS runner
-COPY --from=builder /bin/prometheus-proxy /
+COPY --from=builder /bin/server /

@@ -1,4 +1,0 @@
-prometheus_url: https://prometheus.spitikos.dev
-port: 50051
-query_range_step_seconds: 15
-stream_interval_seconds: 1

@@ -16,17 +16,17 @@ import (
 type Server struct {
 	prometheus_proxyv1connect.UnimplementedPrometheusServiceHandler
 	client *client.Client
-	cfg    *config.Config
+	cfg    *config.PrometheusProxyConfig
 }
 
 func New(cfg *config.Config) (*Server, error) {
-	client, err := client.New(cfg)
+	client, err := client.New(&cfg.PrometheusProxy)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Prometheus client: %w", err)
 	}
 	return &Server{
 		client: client,
-		cfg:    cfg,
+		cfg:    &cfg.PrometheusProxy,
 	}, nil
 }
 
@@ -43,7 +43,7 @@ func (s *Server) Query(
 		return VectorToQueryResponse(vector), nil
 	}
 
-	return utils.Stream(ctx, stream, fetchFn, s.cfg.StreamInvervalSeconds)
+	return utils.Stream(ctx, stream, fetchFn, s.cfg.StreamIntervalSeconds)
 }
 
 func (s *Server) QueryRange(
@@ -59,5 +59,5 @@ func (s *Server) QueryRange(
 		return MatrixToQueryRangeResponse(matrix), nil
 	}
 
-	return utils.Stream(ctx, stream, fetchFn, s.cfg.StreamInvervalSeconds)
+	return utils.Stream(ctx, stream, fetchFn, s.cfg.StreamIntervalSeconds)
 }

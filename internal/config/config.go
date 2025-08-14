@@ -7,35 +7,32 @@ import (
 )
 
 type Config struct {
-	PrometheusUrl         string
-	Port                  int
-	QueryRangeStepSeconds int
-	StreamInvervalSeconds int
+	Server          ServerConfig          `mapstructure:"server"`
+	PrometheusProxy PrometheusProxyConfig `mapstructure:"prometheus_proxy"`
 }
 
 func New() (*Config, error) {
 	v := viper.New()
 
-	v.SetConfigName("prometheus_proxy")
+	v.SetConfigName("config")
 	v.SetConfigType("yaml")
 	v.AddConfigPath("./config")
-	err := v.ReadInConfig()
-	if err != nil {
+
+	if err := v.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	var cfg Config
-	if cfg.PrometheusUrl = v.GetString("prometheus_url"); cfg.PrometheusUrl == "" {
-		return nil, fmt.Errorf("prometheus_url is required")
+	if err := v.Unmarshal(&cfg); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
-	if cfg.Port = v.GetInt("port"); cfg.Port == 0 {
-		return nil, fmt.Errorf("port is required")
+
+	if err := cfg.Server.Validate(); err != nil {
+		return nil, fmt.Errorf("failed to validate server config: %w", err)
 	}
-	if cfg.QueryRangeStepSeconds = v.GetInt("query_range_step_seconds"); cfg.QueryRangeStepSeconds == 0 {
-		return nil, fmt.Errorf("query_range_step_seconds is required")
-	}
-	if cfg.StreamInvervalSeconds = v.GetInt("stream_interval_seconds"); cfg.StreamInvervalSeconds == 0 {
-		return nil, fmt.Errorf("stream_interval_seconds is required")
+
+	if err := cfg.PrometheusProxy.Validate(); err != nil {
+		return nil, fmt.Errorf("failed to validate prometheus proxy config: %w", err)
 	}
 
 	return &cfg, nil

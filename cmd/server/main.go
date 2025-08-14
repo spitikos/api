@@ -27,20 +27,25 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Add reflection
-	reflector := grpcreflect.NewStaticReflector(prometheus_proxyv1connect.PrometheusServiceName)
+	// Register the reflection service.
+	// This reflector needs to know about all services that will be registered.
+	reflector := grpcreflect.NewStaticReflector(
+		prometheus_proxyv1connect.PrometheusServiceName,
+		// Add new service names here in the future.
+	)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
-	s, err := server.New(cfg)
+	// Register the Prometheus Proxy service.
+	prometheusProxyServer, err := server.New(cfg)
 	if err != nil {
-		slog.Error("failed to create gRPC server", slog.Any("error", err))
+		slog.Error("failed to create prometheus proxy server", slog.Any("error", err))
 		os.Exit(1)
 	}
-	path, handler := prometheus_proxyv1connect.NewPrometheusServiceHandler(s)
+	path, handler := prometheus_proxyv1connect.NewPrometheusServiceHandler(prometheusProxyServer)
 	mux.Handle(path, handler)
 
-	// Add CORS middleware
+	// Add CORS middleware.
 	c := cors.New(cors.Options{
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, "OPTIONS"},
 		AllowedHeaders: []string{"*"},
@@ -48,7 +53,7 @@ func main() {
 	})
 	handlerWithCors := c.Handler(h2c.NewHandler(mux, &http2.Server{}))
 
-	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Port)
+	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	slog.Info("server starting", "address", addr)
 
 	if err := http.ListenAndServe(addr, handlerWithCors); err != nil {

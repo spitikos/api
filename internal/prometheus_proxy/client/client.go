@@ -15,12 +15,12 @@ import (
 type Client struct {
 	client api.Client
 	api    v1.API
-	cfg    *config.Config
+	cfg    *config.PrometheusProxyConfig
 }
 
-func New(cfg *config.Config) (*Client, error) {
+func New(cfg *config.PrometheusProxyConfig) (*Client, error) {
 	client, err := api.NewClient(api.Config{
-		Address: cfg.PrometheusUrl,
+		Address: cfg.Url,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Failed to initialize Prometheus client: %w", err)
