@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package prometheus_proxy.v1;
+
+option go_package = "spitikos/api/prometheusproxy/v1";
+
+import "google/protobuf/timestamp.proto";
+import "prometheus_proxy/v1/types.proto";
+
+service PrometheusService {
+  rpc Query(QueryRequest) returns (stream QueryResponse) {}
+  rpc QueryRange(QueryRangeRequest) returns (stream QueryRangeResponse) {}
+}
+
+message QueryRequest {
+  string query = 1;
+}
+
+message QueryResponse {
+  repeated Sample data = 1;
+}
+
+message QueryRangeRequest {
+  string query = 1;
+  google.protobuf.Timestamp start = 2;
+  google.protobuf.Timestamp end = 3;
+}
+
+message QueryRangeResponse {
+  repeated SampleStream data = 1;
+}
