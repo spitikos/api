@@ -19,6 +19,6 @@ jobs:
     uses: spitikos/spitikos/.github/workflows/release.yaml@main
     with:
       chart_path: '["charts/api/prometheus-proxy"]'
-      image_name: homepage
+      image_name: api
       image_tag: ${{ github.sha }}
     secrets: inherit
