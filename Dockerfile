@@ -7,5 +7,5 @@ COPY . .
 
 RUN go build -o /bin/prometheus-proxy ./cmd/prometheus_proxy
 
-FROM gcr.io/distroless/static-debian12 as runner
+FROM gcr.io/distroless/static-debian12 AS runner
 COPY --from=builder /bin/prometheus-proxy /
