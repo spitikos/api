@@ -8,6 +8,7 @@ import (
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/logger"
 	"spitikos/api/internal/prometheus_proxy/server"
+	"time"
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus_proxy/v1/prometheus_proxyv1connect"
 	"connectrpc.com/grpcreflect"
@@ -49,7 +50,13 @@ func main() {
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	slog.Info("server starting", "address", addr)
 
-	if err := http.ListenAndServe(addr, h2c.NewHandler(mux, &http2.Server{})); err != nil {
+	srv := &http.Server{
+		Addr:    addr,
+		Handler: h2c.NewHandler(mux, &http2.Server{}),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
 }
