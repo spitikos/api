@@ -45,18 +45,12 @@ func main() {
 	path, handler := prometheus_proxyv1connect.NewPrometheusServiceHandler(prometheusProxyServer)
 	mux.Handle(path, handler)
 
-	// Add CORS middleware.
-	c := cors.New(cors.Options{
-		AllowedMethods: []string{http.MethodGet, http.MethodPost, "OPTIONS"},
-		AllowedHeaders: []string{"*"},
-		AllowedOrigins: []string{"*"},
-	})
-	handlerWithCors := c.Handler(h2c.NewHandler(mux, &http2.Server{}))
+	// handlerWithCors := c.Handler(h2c.NewHandler(mux, &http2.Server{}))
 
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	slog.Info("server starting", "address", addr)
 
-	if err := http.ListenAndServe(addr, handlerWithCors); err != nil {
+	if err := http.ListenAndServe(addr, h2c.NewHandler(mux, &http2.Server{})); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
 }
