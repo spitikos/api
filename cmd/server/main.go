@@ -8,7 +8,6 @@ import (
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/logger"
 	"spitikos/api/internal/prometheus_proxy/server"
-	"time"
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus_proxy/v1/prometheus_proxyv1connect"
 	"connectrpc.com/grpcreflect"
@@ -28,7 +27,6 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register the reflection service.
-	// This reflector needs to know about all services that will be registered.
 	reflector := grpcreflect.NewStaticReflector(
 		prometheus_proxyv1connect.PrometheusServiceName,
 		// Add new service names here in the future.
@@ -36,7 +34,6 @@ func main() {
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
-	// Register the Prometheus Proxy service.
 	prometheusProxyServer, err := server.New(cfg)
 	if err != nil {
 		slog.Error("failed to create prometheus proxy server", slog.Any("error", err))
@@ -45,15 +42,12 @@ func main() {
 	path, handler := prometheus_proxyv1connect.NewPrometheusServiceHandler(prometheusProxyServer)
 	mux.Handle(path, handler)
 
-	// handlerWithCors := c.Handler(h2c.NewHandler(mux, &http2.Server{}))
-
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	slog.Info("server starting", "address", addr)
 
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: h2c.NewHandler(mux, &http2.Server{}),
-		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	if err := srv.ListenAndServe(); err != nil {
