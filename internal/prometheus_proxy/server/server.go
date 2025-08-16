@@ -52,7 +52,7 @@ func (s *Server) QueryRange(
 	stream *connect.ServerStream[pb.QueryRangeResponse],
 ) error {
 	fetchFn := func(ctx context.Context) (*pb.QueryRangeResponse, error) {
-		matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Start.AsTime(), req.Msg.End.AsTime())
+		matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
 		}

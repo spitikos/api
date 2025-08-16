@@ -22,8 +22,7 @@ message QueryResponse {
 
 message QueryRangeRequest {
   string query = 1;
-  google.protobuf.Timestamp start = 2;
-  google.protobuf.Timestamp end = 3;
+  google.protobuf.Timestamp since = 2;
 }
 
 message QueryRangeResponse {
