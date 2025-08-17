@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package hello.v1;
+
+option go_package = "spitikos/api/hello/v1";
+
+import "google/protobuf/timestamp.proto";
+
+service HelloService {
+  rpc Hello(HelloRequest) returns (HelloResponse) {}
+  rpc MyNameIs(MyNameIsRequest) returns (MyNameIsResponse) {}
+  rpc Time(TimeRequest) returns (stream TimeResponse) {}
+}
+
+message HelloRequest {}
+
+message HelloResponse {
+  string reply = 1;
+}
+
+message MyNameIsRequest {
+  string name = 1;
+}
+
+message MyNameIsResponse {
+  string reply = 1;
+}
+
+message TimeRequest {}
+
+message TimeResponse {
+  google.protobuf.Timestamp now = 1;
+}

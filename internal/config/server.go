@@ -2,13 +2,18 @@ package config
 
 import "errors"
 
-type ServerConfig struct {
-	Port int `mapstructure:"port"`
+type Server struct {
+	Port                  int `mapstructure:"port"`
+	StreamIntervalSeconds int `mapstructure:"stream_interval_seconds"`
 }
 
-func (s *ServerConfig) Validate() error {
-	if s.Port == 0 {
+func (cfg *Server) Validate() error {
+	if cfg.Port == 0 {
 		return errors.New("server.port is required")
 	}
+	if cfg.StreamIntervalSeconds == 0 {
+		return errors.New("prometheus_proxy.stream_interval_seconds is required")
+	}
+
 	return nil
 }

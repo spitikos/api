@@ -3,8 +3,8 @@ module spitikos/api
 go 1.24.4
 
 require (
-	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250816042023-f749c869d664.1
-	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250816042023-f749c869d664.1
+	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250817022828-20bd09ecab35.1
+	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250817022828-20bd09ecab35.1
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/lmittmann/tint v1.1.2
@@ -12,6 +12,7 @@ require (
 	github.com/prometheus/common v0.65.0
 	github.com/spf13/viper v1.20.1
 	golang.org/x/net v0.40.0
+	google.golang.org/protobuf v1.36.6
 )
 
 require (
@@ -32,6 +33,5 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

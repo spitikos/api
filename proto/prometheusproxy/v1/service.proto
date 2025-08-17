@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package prometheus_proxy.v1;
+package prometheusproxy.v1;
 
 option go_package = "spitikos/api/prometheusproxy/v1";
 
 import "google/protobuf/timestamp.proto";
-import "prometheus_proxy/v1/types.proto";
+import "prometheusproxy/v1/types.proto";
 
-service PrometheusService {
+service PrometheusProxyService {
   rpc Query(QueryRequest) returns (stream QueryResponse) {}
   rpc QueryRange(QueryRangeRequest) returns (stream QueryRangeResponse) {}
 }

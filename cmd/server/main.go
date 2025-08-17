@@ -7,9 +7,11 @@ import (
 	"os"
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/logger"
-	"spitikos/api/internal/prometheus_proxy/server"
+	"spitikos/api/internal/services/hello"
+	"spitikos/api/internal/services/prometheusproxy"
 
-	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus_proxy/v1/prometheus_proxyv1connect"
+	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/v1/hellov1connect"
+	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheusproxy/v1/prometheusproxyv1connect"
 	"connectrpc.com/grpcreflect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -24,33 +26,37 @@ func main() {
 		os.Exit(1)
 	}
 
-	mux := http.NewServeMux()
-
-	// Register the reflection service.
 	reflector := grpcreflect.NewStaticReflector(
-		prometheus_proxyv1connect.PrometheusServiceName,
-		// Add new service names here in the future.
+		hellov1connect.HelloServiceName,
+		prometheusproxyv1connect.PrometheusProxyServiceName,
 	)
-	mux.Handle(grpcreflect.NewHandlerV1(reflector))
-	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
-	prometheusProxyServer, err := server.New(cfg)
+	helloSvc, err := hello.New(cfg)
 	if err != nil {
-		slog.Error("failed to create prometheus proxy server", slog.Any("error", err))
+		slog.Error("failed to create Hello server", slog.Any("error", err))
 		os.Exit(1)
 	}
-	path, handler := prometheus_proxyv1connect.NewPrometheusServiceHandler(prometheusProxyServer)
-	mux.Handle(path, handler)
+	prometheusProxySvc, err := prometheusproxy.New(cfg)
+	if err != nil {
+		slog.Error("failed to create Prometheus Proxy server", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+	mux.Handle(hellov1connect.NewHelloServiceHandler(helloSvc))
+	mux.Handle(prometheusproxyv1connect.NewPrometheusProxyServiceHandler(prometheusProxySvc))
 
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
-	slog.Info("server starting", "address", addr)
+	slog.Info("server starting", slog.String("address", addr))
 
-	srv := &http.Server{
+	s := &http.Server{
 		Addr:    addr,
 		Handler: h2c.NewHandler(mux, &http2.Server{}),
 	}
 
-	if err := srv.ListenAndServe(); err != nil {
+	if err := s.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
 }

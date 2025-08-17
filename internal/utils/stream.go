@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"log/slog"
+	"spitikos/api/internal/config"
 	"time"
 
 	"connectrpc.com/connect"
@@ -11,9 +12,9 @@ import (
 // a generic helper to create a streaming RPC for a specific statistic.
 func Stream[TRes any](
 	ctx context.Context,
+	cfg *config.Config,
 	stream *connect.ServerStream[TRes],
 	fetchFn func(context.Context) (*TRes, error),
-	intervalSeconds int,
 ) error {
 	// initial fetch
 	data, err := fetchFn(ctx)
@@ -26,7 +27,7 @@ func Stream[TRes any](
 		return err
 	}
 
-	ticker := time.NewTicker(time.Duration(intervalSeconds) * time.Second)
+	ticker := time.NewTicker(time.Duration(cfg.Server.StreamIntervalSeconds) * time.Second)
 	defer ticker.Stop()
 
 	for {

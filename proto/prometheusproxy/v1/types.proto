@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package prometheus_proxy.v1;
+package prometheusproxy.v1;
 
 option go_package = "spitikos/api/prometheusproxy/v1";
 
