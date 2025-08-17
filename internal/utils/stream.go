@@ -43,7 +43,7 @@ func Stream[TRes any](
 				return err
 			}
 		case <-ctx.Done():
-			slog.Info("client disconnected")
+			// client disconnected
 			return nil
 		}
 	}
