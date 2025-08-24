@@ -25,11 +25,7 @@ func main() {
 		slog.Error("failed to load config", slog.Any("error", err))
 		os.Exit(1)
 	}
-
-	reflector := grpcreflect.NewStaticReflector(
-		hellov1connect.HelloServiceName,
-		prometheusproxyv1connect.PrometheusProxyServiceName,
-	)
+	slog.Info("config loaded", slog.Any("config", cfg))
 
 	helloSvc, err := hello.New(cfg)
 	if err != nil {
@@ -41,6 +37,12 @@ func main() {
 		slog.Error("failed to create Prometheus Proxy server", slog.Any("error", err))
 		os.Exit(1)
 	}
+	slog.Info("services initialized")
+
+	reflector := grpcreflect.NewStaticReflector(
+		hellov1connect.HelloServiceName,
+		prometheusproxyv1connect.PrometheusProxyServiceName,
+	)
 
 	mux := http.NewServeMux()
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
@@ -49,7 +51,6 @@ func main() {
 	mux.Handle(prometheusproxyv1connect.NewPrometheusProxyServiceHandler(prometheusProxySvc))
 
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
-
 	handler := h2c.NewHandler(mux, &http2.Server{})
 
 	s := &http.Server{
@@ -58,6 +59,7 @@ func main() {
 	}
 
 	slog.Info("server starting", slog.String("address", addr))
+
 	if err := s.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
