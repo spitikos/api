@@ -7,7 +7,7 @@ import (
 	"spitikos/api/internal/utils"
 	"time"
 
-	prometheusproxyv1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheusproxy/v1"
+	v1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheusproxy/v1"
 	"connectrpc.com/connect"
 )
 
@@ -26,10 +26,35 @@ func New(cfg *config.Config) (*Service, error) {
 
 func (s *Service) Query(
 	ctx context.Context,
-	req *connect.Request[prometheusproxyv1.QueryRequest],
-	stream *connect.ServerStream[prometheusproxyv1.QueryResponse],
+	req *connect.Request[v1.QueryRequest],
+) (*connect.Response[v1.QueryResponse], error) {
+	vector, err := s.proxy.Query(ctx, req.Msg.Query, time.Now())
+	if err != nil {
+		return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
+	}
+
+	res := connect.NewResponse(VectorToQueryResponse(vector))
+	return res, nil
+}
+
+func (s *Service) QueryRange(
+	ctx context.Context,
+	req *connect.Request[v1.QueryRangeRequest],
+) (*connect.Response[v1.QueryRangeResponse], error) {
+	matrix, err := s.proxy.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
+	if err != nil {
+		return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
+	}
+	res := connect.NewResponse(MatrixToQueryRangeResponse(matrix))
+	return res, nil
+}
+
+func (s *Service) StreamQuery(
+	ctx context.Context,
+	req *connect.Request[v1.QueryRequest],
+	stream *connect.ServerStream[v1.QueryResponse],
 ) error {
-	fetchFn := func(ctx context.Context) (*prometheusproxyv1.QueryResponse, error) {
+	fetchFn := func(ctx context.Context) (*v1.QueryResponse, error) {
 		vector, err := s.proxy.Query(ctx, req.Msg.Query, time.Now())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
@@ -40,12 +65,12 @@ func (s *Service) Query(
 	return utils.Stream(ctx, s.cfg, stream, fetchFn)
 }
 
-func (s *Service) QueryRange(
+func (s *Service) StreamQueryRange(
 	ctx context.Context,
-	req *connect.Request[prometheusproxyv1.QueryRangeRequest],
-	stream *connect.ServerStream[prometheusproxyv1.QueryRangeResponse],
+	req *connect.Request[v1.QueryRangeRequest],
+	stream *connect.ServerStream[v1.QueryRangeResponse],
 ) error {
-	fetchFn := func(ctx context.Context) (*prometheusproxyv1.QueryRangeResponse, error) {
+	fetchFn := func(ctx context.Context) (*v1.QueryRangeResponse, error) {
 		matrix, err := s.proxy.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)

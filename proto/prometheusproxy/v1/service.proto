@@ -8,8 +8,10 @@ import "google/protobuf/timestamp.proto";
 import "prometheusproxy/v1/types.proto";
 
 service PrometheusProxyService {
-  rpc Query(QueryRequest) returns (stream QueryResponse) {}
-  rpc QueryRange(QueryRangeRequest) returns (stream QueryRangeResponse) {}
+  rpc Query(QueryRequest) returns (QueryResponse) {}
+  rpc QueryRange(QueryRangeRequest) returns (QueryRangeResponse) {}
+  rpc StreamQuery(QueryRequest) returns (stream QueryResponse) {}
+  rpc StreamQueryRange(QueryRangeRequest) returns (stream QueryRangeResponse) {}
 }
 
 message QueryRequest {
