@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Server          Server          `mapstructure:"server"`
-	PrometheusProxy PrometheusProxy `mapstructure:"prometheus_proxy"`
+	PrometheusProxy PrometheusProxy `mapstructure:"prometheusProxy"`
 }
 
 func New() (*Config, error) {
@@ -32,7 +32,7 @@ func New() (*Config, error) {
 	}
 
 	if err := cfg.PrometheusProxy.Validate(); err != nil {
-		return nil, fmt.Errorf("failed to validate prometheus proxy config: %w", err)
+		return nil, fmt.Errorf("failed to validate Prometheus proxy config: %w", err)
 	}
 
 	return &cfg, nil
