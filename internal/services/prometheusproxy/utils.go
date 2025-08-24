@@ -3,6 +3,7 @@ package prometheusproxy
 import (
 	prometheusproxyv1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheusproxy/v1"
 	"github.com/prometheus/common/model"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func VectorToQueryResponse(vector model.Vector) *prometheusproxyv1.QueryResponse {
@@ -12,7 +13,7 @@ func VectorToQueryResponse(vector model.Vector) *prometheusproxyv1.QueryResponse
 		data[i] = prometheusproxyv1.Sample_builder{
 			Metric: metricToMap(sample.Metric),
 			Value: prometheusproxyv1.Value_builder{
-				Timestamp: int64(sample.Timestamp),
+				Timestamp: timestamppb.New(sample.Timestamp.Time()),
 				Value:     float64(sample.Value),
 			}.Build(),
 		}.Build()
@@ -32,7 +33,7 @@ func MatrixToQueryRangeResponse(matrix model.Matrix) *prometheusproxyv1.QueryRan
 		values := make([]*prometheusproxyv1.Value, len(sampleStream.Values))
 		for j, v := range sampleStream.Values {
 			values[j] = prometheusproxyv1.Value_builder{
-				Timestamp: int64(v.Timestamp),
+				Timestamp: timestamppb.New(v.Timestamp.Time()),
 				Value:     float64(v.Value),
 			}.Build()
 		}
