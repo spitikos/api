@@ -10,12 +10,14 @@ require (
 	github.com/lmittmann/tint v1.1.2
 	github.com/prometheus/client_golang v1.23.0
 	github.com/prometheus/common v0.65.0
+	github.com/rs/cors v1.11.1
 	github.com/spf13/viper v1.20.1
 	golang.org/x/net v0.40.0
 	google.golang.org/protobuf v1.36.6
 )
 
 require (
+	connectrpc.com/cors v0.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

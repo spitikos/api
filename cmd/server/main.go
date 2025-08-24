@@ -12,7 +12,9 @@ import (
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/v1/hellov1connect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheusproxy/v1/prometheusproxyv1connect"
+	connectcors "connectrpc.com/cors"
 	"connectrpc.com/grpcreflect"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -48,26 +50,28 @@ func main() {
 	mux.Handle(hellov1connect.NewHelloServiceHandler(helloSvc))
 	mux.Handle(prometheusproxyv1connect.NewPrometheusProxyServiceHandler(prometheusProxySvc))
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		if r.Method == http.MethodOptions {
-			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-		mux.ServeHTTP(w, r)
-	})
-
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
-	slog.Info("server starting", slog.String("address", addr))
+
+	handler := h2c.NewHandler(mux, &http2.Server{})
+	handler = withCORS(handler)
 
 	s := &http.Server{
 		Addr:    addr,
-		Handler: h2c.NewHandler(mux, &http2.Server{}),
+		Handler: handler,
 	}
 
+	slog.Info("server starting", slog.String("address", addr))
 	if err := s.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
+}
+
+func withCORS(h http.Handler) http.Handler {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"localhost:3000", "spitikos.dev"},
+		AllowedMethods: connectcors.AllowedMethods(),
+		AllowedHeaders: connectcors.AllowedHeaders(),
+		ExposedHeaders: connectcors.ExposedHeaders(),
+	})
+	return c.Handler(h)
 }
