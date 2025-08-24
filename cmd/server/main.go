@@ -68,7 +68,7 @@ func main() {
 
 func withCORS(h http.Handler) http.Handler {
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"localhost:3000", "spitikos.dev"},
+		AllowedOrigins: []string{"*"},
 		AllowedMethods: connectcors.AllowedMethods(),
 		AllowedHeaders: connectcors.AllowedHeaders(),
 		ExposedHeaders: connectcors.ExposedHeaders(),
