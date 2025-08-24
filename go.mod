@@ -6,6 +6,7 @@ require (
 	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250817022828-20bd09ecab35.1
 	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250817022828-20bd09ecab35.1
 	connectrpc.com/connect v1.18.1
+	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/lmittmann/tint v1.1.2
 	github.com/prometheus/client_golang v1.23.0
@@ -17,7 +18,6 @@ require (
 )
 
 require (
-	connectrpc.com/cors v0.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
