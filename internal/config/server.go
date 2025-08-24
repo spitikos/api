@@ -6,7 +6,7 @@ import (
 
 type Server struct {
 	Port                  int `mapstructure:"port"`
-	StreamIntervalSeconds int `mapstructure:"stream_interval_seconds"`
+	StreamIntervalSeconds int `mapstructure:"streamIntervalSeconds"`
 }
 
 func (cfg *Server) Validate() error {
@@ -14,7 +14,7 @@ func (cfg *Server) Validate() error {
 		return errors.New("server.port is required")
 	}
 	if cfg.StreamIntervalSeconds == 0 {
-		return errors.New("server.stream_interval_seconds is required")
+		return errors.New("server.streamIntervalSeconds is required")
 	}
 
 	return nil
