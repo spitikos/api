@@ -12,9 +12,7 @@ import (
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/v1/hellov1connect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheusproxy/v1/prometheusproxyv1connect"
-	connectcors "connectrpc.com/cors"
 	"connectrpc.com/grpcreflect"
-	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -53,7 +51,6 @@ func main() {
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 
 	handler := h2c.NewHandler(mux, &http2.Server{})
-	handler = withCORS(handler)
 
 	s := &http.Server{
 		Addr:    addr,
@@ -64,14 +61,4 @@ func main() {
 	if err := s.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
-}
-
-func withCORS(h http.Handler) http.Handler {
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: connectcors.AllowedMethods(),
-		AllowedHeaders: connectcors.AllowedHeaders(),
-		ExposedHeaders: connectcors.ExposedHeaders(),
-	})
-	return c.Handler(h)
 }

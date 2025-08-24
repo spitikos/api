@@ -6,12 +6,10 @@ require (
 	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250817022828-20bd09ecab35.1
 	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250817022828-20bd09ecab35.1
 	connectrpc.com/connect v1.18.1
-	connectrpc.com/cors v0.1.0
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/lmittmann/tint v1.1.2
 	github.com/prometheus/client_golang v1.23.0
 	github.com/prometheus/common v0.65.0
-	github.com/rs/cors v1.11.1
 	github.com/spf13/viper v1.20.1
 	golang.org/x/net v0.40.0
 	google.golang.org/protobuf v1.36.6
