@@ -5,7 +5,7 @@ import (
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/utils"
 
-	hellov1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/hello/v1"
+	hellopb "buf.build/gen/go/spitikos/api/protocolbuffers/go/hello"
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -20,9 +20,9 @@ func New(cfg *config.Config) (*Service, error) {
 
 func (s *Service) Hello(
 	ctx context.Context,
-	req *connect.Request[hellov1.HelloRequest],
-) (*connect.Response[hellov1.HelloResponse], error) {
-	res := connect.NewResponse(&hellov1.HelloResponse{
+	req *connect.Request[hellopb.HelloRequest],
+) (*connect.Response[hellopb.HelloResponse], error) {
+	res := connect.NewResponse(&hellopb.HelloResponse{
 		Reply: "Hello!",
 	})
 	return res, nil
@@ -30,9 +30,9 @@ func (s *Service) Hello(
 
 func (s *Service) MyNameIs(
 	ctx context.Context,
-	req *connect.Request[hellov1.MyNameIsRequest],
-) (*connect.Response[hellov1.MyNameIsResponse], error) {
-	res := connect.NewResponse(&hellov1.MyNameIsResponse{
+	req *connect.Request[hellopb.MyNameIsRequest],
+) (*connect.Response[hellopb.MyNameIsResponse], error) {
+	res := connect.NewResponse(&hellopb.MyNameIsResponse{
 		Reply: "Your name is " + req.Msg.Name,
 	})
 	return res, nil
@@ -40,11 +40,11 @@ func (s *Service) MyNameIs(
 
 func (s *Service) Time(
 	ctx context.Context,
-	req *connect.Request[hellov1.TimeRequest],
-	stream *connect.ServerStream[hellov1.TimeResponse],
+	req *connect.Request[hellopb.TimeRequest],
+	stream *connect.ServerStream[hellopb.TimeResponse],
 ) error {
-	fetchFn := func(ctx context.Context) (*hellov1.TimeResponse, error) {
-		res := hellov1.TimeResponse_builder{
+	fetchFn := func(ctx context.Context) (*hellopb.TimeResponse, error) {
+		res := hellopb.TimeResponse_builder{
 			Now: timestamppb.Now(),
 		}
 		return res.Build(), nil

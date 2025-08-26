@@ -2,3 +2,8 @@ version: v2
 modules:
   - path: ./proto
     name: buf.build/spitikos/api
+lint:
+  use:
+    - STANDARD
+  except:
+    - PACKAGE_VERSION_SUFFIX

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package prometheus;
+
+import "google/protobuf/timestamp.proto";
+
+service PrometheusService {
+  rpc Query(QueryRequest) returns (QueryResponse) {}
+  rpc QueryRange(QueryRangeRequest) returns (QueryRangeResponse) {}
+  rpc StreamQuery(StreamQueryRequest) returns (stream StreamQueryResponse) {}
+  rpc StreamQueryRange(StreamQueryRangeRequest) returns (stream StreamQueryRangeResponse) {}
+}
+
+message QueryRequest {
+  string query = 1;
+}
+message StreamQueryRequest {
+  string query = 1;
+}
+
+message QueryResponse {
+  repeated Sample data = 1;
+}
+message StreamQueryResponse {
+  repeated Sample data = 1;
+}
+
+message QueryRangeRequest {
+  string query = 1;
+  google.protobuf.Timestamp since = 2;
+}
+message StreamQueryRangeRequest {
+  string query = 1;
+  google.protobuf.Timestamp since = 2;
+}
+
+message QueryRangeResponse {
+  repeated SampleStream data = 1;
+}
+message StreamQueryRangeResponse {
+  repeated SampleStream data = 1;
+}
+
+
+message Value {
+  google.protobuf.Timestamp timestamp = 1;
+  double value = 2;
+}
+
+message Sample {
+  map<string, string> metric = 1;
+  Value value = 2;
+}
+
+message SampleStream {
+  map<string, string> metric = 1;
+  repeated Value values = 2;
+}

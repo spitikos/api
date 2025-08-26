@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-package hello.v1;
-
-option go_package = "spitikos/api/hello/v1";
+package hello;
 
 import "google/protobuf/timestamp.proto";
 

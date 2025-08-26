@@ -7,7 +7,7 @@ import (
 	"spitikos/api/internal/utils"
 	"time"
 
-	v1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheus/v1"
+	prometheuspb "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheus"
 	"connectrpc.com/connect"
 )
 
@@ -26,40 +26,41 @@ func New(cfg *config.Config) (*Service, error) {
 
 func (s *Service) Query(
 	ctx context.Context,
-	req *connect.Request[v1.QueryRequest],
-) (*connect.Response[v1.QueryResponse], error) {
+	req *connect.Request[prometheuspb.QueryRequest],
+) (*connect.Response[prometheuspb.QueryResponse], error) {
 	vector, err := s.client.Query(ctx, req.Msg.Query, time.Now())
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
 	}
 
-	res := connect.NewResponse(VectorToQueryResponse(vector))
+	res := connect.NewResponse(buildQueryResponse(vector))
 	return res, nil
 }
 
 func (s *Service) QueryRange(
 	ctx context.Context,
-	req *connect.Request[v1.QueryRangeRequest],
-) (*connect.Response[v1.QueryRangeResponse], error) {
+	req *connect.Request[prometheuspb.QueryRangeRequest],
+) (*connect.Response[prometheuspb.QueryRangeResponse], error) {
 	matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
 	}
-	res := connect.NewResponse(MatrixToQueryRangeResponse(matrix))
+	res := connect.NewResponse(buildQueryRangeResponse(matrix))
 	return res, nil
 }
 
 func (s *Service) StreamQuery(
 	ctx context.Context,
-	req *connect.Request[v1.QueryRequest],
-	stream *connect.ServerStream[v1.QueryResponse],
+	req *connect.Request[prometheuspb.StreamQueryRequest],
+	stream *connect.ServerStream[prometheuspb.StreamQueryResponse],
 ) error {
-	fetchFn := func(ctx context.Context) (*v1.QueryResponse, error) {
+	fetchFn := func(ctx context.Context) (*prometheuspb.StreamQueryResponse, error) {
 		vector, err := s.client.Query(ctx, req.Msg.Query, time.Now())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
 		}
-		return VectorToQueryResponse(vector), nil
+		res := buildStreamQueryResponse(vector)
+		return res, nil
 	}
 
 	return utils.Stream(ctx, s.cfg, stream, fetchFn)
@@ -67,15 +68,16 @@ func (s *Service) StreamQuery(
 
 func (s *Service) StreamQueryRange(
 	ctx context.Context,
-	req *connect.Request[v1.QueryRangeRequest],
-	stream *connect.ServerStream[v1.QueryRangeResponse],
+	req *connect.Request[prometheuspb.StreamQueryRangeRequest],
+	stream *connect.ServerStream[prometheuspb.StreamQueryRangeResponse],
 ) error {
-	fetchFn := func(ctx context.Context) (*v1.QueryRangeResponse, error) {
+	fetchFn := func(ctx context.Context) (*prometheuspb.StreamQueryRangeResponse, error) {
 		matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
 		}
-		return MatrixToQueryRangeResponse(matrix), nil
+		res := buildStreamQueryRangeResponse(matrix)
+		return res, nil
 	}
 
 	return utils.Stream(ctx, s.cfg, stream, fetchFn)

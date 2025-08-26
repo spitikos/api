@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package docs;
+
+service DocsService {
+  rpc GetSlugs(GetSlugsRequest) returns (GetSlugsResponse) {}
+}
+
+message GetSlugsRequest {}
+
+message GetSlugsResponse {
+  repeated string slugs = 1;
+}
