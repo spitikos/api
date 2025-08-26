@@ -25,6 +25,7 @@ func main() {
 		slog.Error("failed to load config", slog.Any("error", err))
 		os.Exit(1)
 	}
+
 	slog.Info("config loaded", slog.Any("config", cfg))
 
 	helloSvc, err := hello.New(cfg)
@@ -37,6 +38,7 @@ func main() {
 		slog.Error("failed to create Prometheus Proxy server", slog.Any("error", err))
 		os.Exit(1)
 	}
+
 	slog.Info("services initialized")
 
 	reflector := grpcreflect.NewStaticReflector(

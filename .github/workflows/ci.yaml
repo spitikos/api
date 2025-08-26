@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    uses: spitikos/spitikos/.github/workflows/release.yaml@main
+    uses: spitikos/charts/.github/workflows/release.yaml@main
     with:
       chart_path: '["charts/api"]'
       image_name: api
