@@ -4,28 +4,44 @@ package hello;
 
 import "google/protobuf/timestamp.proto";
 
+// HelloService is a simple service for testing connectivity and gRPC features.
 service HelloService {
+  // Hello is a unary RPC that returns a simple greeting.
   rpc Hello(HelloRequest) returns (HelloResponse) {}
+
+  // MyNameIs is a unary RPC that takes a name and returns a personalized greeting.
   rpc MyNameIs(MyNameIsRequest) returns (MyNameIsResponse) {}
+
+  // Time is a server-streaming RPC that sends the current server time every second.
   rpc Time(TimeRequest) returns (stream TimeResponse) {}
 }
 
+// HelloRequest is the request message for the Hello RPC.
 message HelloRequest {}
 
+// HelloResponse contains a simple greeting.
 message HelloResponse {
+  // The greeting message from the server.
   string reply = 1;
 }
 
+// MyNameIsRequest contains the name of the user to greet.
 message MyNameIsRequest {
+  // The name to include in the greeting.
   string name = 1;
 }
 
+// MyNameIsResponse contains a personalized greeting.
 message MyNameIsResponse {
+  // The personalized greeting message.
   string reply = 1;
 }
 
+// TimeRequest is the request message for the Time RPC.
 message TimeRequest {}
 
+// TimeResponse contains a timestamp.
 message TimeResponse {
+  // The current time on the server.
   google.protobuf.Timestamp now = 1;
 }
