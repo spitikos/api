@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Server          Server          `mapstructure:"server"`
-	PrometheusProxy PrometheusProxy `mapstructure:"prometheusProxy"`
+	Server          ServerCfg     `mapstructure:"server"`
+	PrometheusProxy PrometheusCfg `mapstructure:"prometheus"`
 }
 
 func New() (*Config, error) {

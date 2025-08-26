@@ -4,12 +4,12 @@ import (
 	"errors"
 )
 
-type Server struct {
+type ServerCfg struct {
 	Port                  int `mapstructure:"port"`
 	StreamIntervalSeconds int `mapstructure:"streamIntervalSeconds"`
 }
 
-func (cfg *Server) Validate() error {
+func (cfg *ServerCfg) Validate() error {
 	if cfg.Port == 0 {
 		return errors.New("server.port is required")
 	}

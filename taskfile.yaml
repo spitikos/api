@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  buf:push:
+    desc: Push the current proto files to the remote repository.
+    cmds:
+      - buf push
+    silent: true
+
+  buf:lint:
+    desc: Lint the current proto files.
+    cmds:
+      - buf lint
+    silent: true

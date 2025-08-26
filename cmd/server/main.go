@@ -8,10 +8,10 @@ import (
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/logger"
 	"spitikos/api/internal/services/hello"
-	"spitikos/api/internal/services/prometheusproxy"
+	"spitikos/api/internal/services/prometheus"
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/v1/hellov1connect"
-	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheusproxy/v1/prometheusproxyv1connect"
+	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus/v1/prometheusv1connect"
 	"connectrpc.com/grpcreflect"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -33,9 +33,9 @@ func main() {
 		slog.Error("failed to create Hello server", slog.Any("error", err))
 		os.Exit(1)
 	}
-	prometheusProxySvc, err := prometheusproxy.New(cfg)
+	prometheusSvc, err := prometheus.New(cfg)
 	if err != nil {
-		slog.Error("failed to create Prometheus Proxy server", slog.Any("error", err))
+		slog.Error("failed to create Prometheus server", slog.Any("error", err))
 		os.Exit(1)
 	}
 
@@ -43,14 +43,14 @@ func main() {
 
 	reflector := grpcreflect.NewStaticReflector(
 		hellov1connect.HelloServiceName,
-		prometheusproxyv1connect.PrometheusProxyServiceName,
+		prometheusv1connect.PrometheusServiceName,
 	)
 
 	mux := http.NewServeMux()
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	mux.Handle(hellov1connect.NewHelloServiceHandler(helloSvc))
-	mux.Handle(prometheusproxyv1connect.NewPrometheusProxyServiceHandler(prometheusProxySvc))
+	mux.Handle(prometheusv1connect.NewPrometheusServiceHandler(prometheusSvc))
 
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	handler := h2c.NewHandler(mux, &http2.Server{})

@@ -1,49 +1,49 @@
-package prometheusproxy
+package prometheus
 
 import (
-	prometheusproxyv1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheusproxy/v1"
+	prometheusv1 "buf.build/gen/go/spitikos/api/protocolbuffers/go/prometheus/v1"
 	"github.com/prometheus/common/model"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func VectorToQueryResponse(vector model.Vector) *prometheusproxyv1.QueryResponse {
-	data := make([]*prometheusproxyv1.Sample, vector.Len())
+func VectorToQueryResponse(vector model.Vector) *prometheusv1.QueryResponse {
+	data := make([]*prometheusv1.Sample, vector.Len())
 
 	for i, sample := range vector {
-		data[i] = prometheusproxyv1.Sample_builder{
+		data[i] = prometheusv1.Sample_builder{
 			Metric: metricToMap(sample.Metric),
-			Value: prometheusproxyv1.Value_builder{
+			Value: prometheusv1.Value_builder{
 				Timestamp: timestamppb.New(sample.Timestamp.Time()),
 				Value:     float64(sample.Value),
 			}.Build(),
 		}.Build()
 	}
 
-	res := prometheusproxyv1.QueryResponse_builder{
+	res := prometheusv1.QueryResponse_builder{
 		Data: data,
 	}
 
 	return res.Build()
 }
 
-func MatrixToQueryRangeResponse(matrix model.Matrix) *prometheusproxyv1.QueryRangeResponse {
-	data := make([]*prometheusproxyv1.SampleStream, matrix.Len())
+func MatrixToQueryRangeResponse(matrix model.Matrix) *prometheusv1.QueryRangeResponse {
+	data := make([]*prometheusv1.SampleStream, matrix.Len())
 
 	for i, sampleStream := range matrix {
-		values := make([]*prometheusproxyv1.Value, len(sampleStream.Values))
+		values := make([]*prometheusv1.Value, len(sampleStream.Values))
 		for j, v := range sampleStream.Values {
-			values[j] = prometheusproxyv1.Value_builder{
+			values[j] = prometheusv1.Value_builder{
 				Timestamp: timestamppb.New(v.Timestamp.Time()),
 				Value:     float64(v.Value),
 			}.Build()
 		}
-		data[i] = prometheusproxyv1.SampleStream_builder{
+		data[i] = prometheusv1.SampleStream_builder{
 			Metric: metricToMap(sampleStream.Metric),
 			Values: values,
 		}.Build()
 	}
 
-	res := prometheusproxyv1.QueryRangeResponse_builder{
+	res := prometheusv1.QueryRangeResponse_builder{
 		Data: data,
 	}
 

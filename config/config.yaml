@@ -1,6 +1,6 @@
 server:
   port: 50051
   streamIntervalSeconds: 5
-prometheusProxy:
+prometheus:
   url: https://prometheus.spitikos.dev
   queryRangeStepSeconds: 15

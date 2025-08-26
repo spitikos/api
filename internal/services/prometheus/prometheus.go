@@ -1,4 +1,4 @@
-package prometheusproxy
+package prometheus
 
 import (
 	"context"
@@ -12,13 +12,12 @@ import (
 	"github.com/prometheus/common/model"
 )
 
-type Proxy struct {
-	client api.Client
-	api    v1.API
-	cfg    *config.Config
+type Client struct {
+	api v1.API
+	cfg *config.Config
 }
 
-func NewProxy(cfg *config.Config) (*Proxy, error) {
+func NewClient(cfg *config.Config) (*Client, error) {
 	client, err := api.NewClient(api.Config{
 		Address: cfg.PrometheusProxy.Url,
 	})
@@ -26,15 +25,14 @@ func NewProxy(cfg *config.Config) (*Proxy, error) {
 		return nil, fmt.Errorf("Failed to initialize Prometheus client: %w", err)
 	}
 
-	return &Proxy{
-		client: client,
-		api:    v1.NewAPI(client),
-		cfg:    cfg,
+	return &Client{
+		api: v1.NewAPI(client),
+		cfg: cfg,
 	}, nil
 }
 
-func (p *Proxy) Query(ctx context.Context, query string, time time.Time) (model.Vector, error) {
-	res, wrn, err := p.api.Query(ctx, query, time)
+func (c *Client) Query(ctx context.Context, query string, time time.Time) (model.Vector, error) {
+	res, wrn, err := c.api.Query(ctx, query, time)
 	if err != nil {
 		return nil, err
 	}
@@ -50,11 +48,11 @@ func (p *Proxy) Query(ctx context.Context, query string, time time.Time) (model.
 	return vector, nil
 }
 
-func (p *Proxy) QueryRange(ctx context.Context, query string, since time.Time) (model.Matrix, error) {
-	res, wrn, err := p.api.QueryRange(ctx, query, v1.Range{
+func (c *Client) QueryRange(ctx context.Context, query string, since time.Time) (model.Matrix, error) {
+	res, wrn, err := c.api.QueryRange(ctx, query, v1.Range{
 		Start: since,
 		End:   time.Now(),
-		Step:  time.Second * time.Duration(p.cfg.PrometheusProxy.QueryRangeStepSeconds),
+		Step:  time.Second * time.Duration(c.cfg.PrometheusProxy.QueryRangeStepSeconds),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
