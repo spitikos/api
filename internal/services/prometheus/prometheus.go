@@ -19,7 +19,7 @@ type Client struct {
 
 func NewClient(cfg *config.Config) (*Client, error) {
 	client, err := api.NewClient(api.Config{
-		Address: cfg.PrometheusProxy.Url,
+		Address: cfg.Prometheus.Url,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Failed to initialize Prometheus client: %w", err)
@@ -52,7 +52,7 @@ func (c *Client) QueryRange(ctx context.Context, query string, since time.Time) 
 	res, wrn, err := c.api.QueryRange(ctx, query, v1.Range{
 		Start: since,
 		End:   time.Now(),
-		Step:  time.Second * time.Duration(c.cfg.PrometheusProxy.QueryRangeStepSeconds),
+		Step:  time.Second * time.Duration(c.cfg.Prometheus.QueryRangeStepSeconds),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)

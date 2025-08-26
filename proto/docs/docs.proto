@@ -6,33 +6,33 @@ option go_package = "github.com/spitikos/spitikos/api/proto/docs;docsv1";
 
 // DocsService manages the documentation lifecycle.
 service DocsService {
-  // SyncDocuments is triggered by a webhook. It receives a complete list of all
+  // Sync is triggered by a webhook. It receives a complete list of all
   // current document slugs, fetches their content, and updates the cache.
-  rpc SyncDocuments(SyncDocumentsRequest) returns (SyncDocumentsResponse) {}
+  rpc Sync(SyncRequest) returns (SyncResponse) {}
 
-  // GetDocumentSlugs retrieves a list of all available document slugs from the cache.
-  rpc GetDocumentSlugs(GetDocumentSlugsRequest) returns (GetDocumentSlugsResponse) {}
+  // GetSlugs retrieves a list of all available document slugs from the cache.
+  rpc GetSlugs(GetSlugsRequest) returns (GetSlugsResponse) {}
 }
 
-// SyncDocumentsRequest contains the complete list of all current document slugs.
-message SyncDocumentsRequest {
+// SyncRequest contains the complete list of all current document slugs.
+message SyncRequest {
   // The complete list of slugs (e.g., "architecture-overview", "pi-setup").
   repeated string slugs = 1;
 }
 
-// SyncDocumentsResponse is a simple response to acknowledge the sync.
-message SyncDocumentsResponse {
+// SyncResponse is a simple response to acknowledge the sync.
+message SyncResponse {
   // Indicates whether the sync request was successfully received.
   bool success = 1;
   // A descriptive message about the result of the operation.
   string message = 2;
 }
 
-// GetDocumentSlugsRequest is the request message for the GetDocumentSlugs RPC.
-message GetDocumentSlugsRequest {}
+// GetSlugsRequest is the request message for the GetSlugs RPC.
+message GetSlugsRequest {}
 
-// GetDocumentSlugsResponse contains the list of all document slugs.
-message GetDocumentSlugsResponse {
+// GetSlugsResponse contains the list of all document slugs.
+message GetSlugsResponse {
   // The list of all slugs currently available in the cache.
   repeated string slugs = 1;
 }

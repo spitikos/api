@@ -22,9 +22,10 @@ func (s *Service) Hello(
 	ctx context.Context,
 	req *connect.Request[hellopb.HelloRequest],
 ) (*connect.Response[hellopb.HelloResponse], error) {
-	res := connect.NewResponse(&hellopb.HelloResponse{
+	builder := hellopb.HelloResponse_builder{
 		Reply: "Hello!",
-	})
+	}
+	res := connect.NewResponse(builder.Build())
 	return res, nil
 }
 
@@ -32,9 +33,10 @@ func (s *Service) MyNameIs(
 	ctx context.Context,
 	req *connect.Request[hellopb.MyNameIsRequest],
 ) (*connect.Response[hellopb.MyNameIsResponse], error) {
-	res := connect.NewResponse(&hellopb.MyNameIsResponse{
+	builder := hellopb.MyNameIsResponse_builder{
 		Reply: "Your name is " + req.Msg.Name,
-	})
+	}
+	res := connect.NewResponse(builder.Build())
 	return res, nil
 }
 

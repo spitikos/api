@@ -7,9 +7,11 @@ import (
 	"os"
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/logger"
+	"spitikos/api/internal/services/docs"
 	"spitikos/api/internal/services/hello"
 	"spitikos/api/internal/services/prometheus"
 
+	"buf.build/gen/go/spitikos/api/connectrpc/go/docs/docsconnect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/helloconnect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus/prometheusconnect"
 	"connectrpc.com/grpcreflect"
@@ -38,12 +40,18 @@ func main() {
 		slog.Error("failed to create Prometheus server", slog.Any("error", err))
 		os.Exit(1)
 	}
+	docsSvc, err := docs.New(cfg)
+	if err != nil {
+		slog.Error("failed to create Docs server", slog.Any("error", err))
+		os.Exit(1)
+	}
 
 	slog.Info("services initialized")
 
 	reflector := grpcreflect.NewStaticReflector(
 		helloconnect.HelloServiceName,
 		prometheusconnect.PrometheusServiceName,
+		docsconnect.DocsServiceName,
 	)
 
 	mux := http.NewServeMux()
@@ -51,6 +59,7 @@ func main() {
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	mux.Handle(helloconnect.NewHelloServiceHandler(helloSvc))
 	mux.Handle(prometheusconnect.NewPrometheusServiceHandler(prometheusSvc))
+	mux.Handle(docsconnect.NewDocsServiceHandler(docsSvc))
 
 	addr := fmt.Sprintf("0.0.0.0:%d", cfg.Server.Port)
 	handler := h2c.NewHandler(mux, &http2.Server{})

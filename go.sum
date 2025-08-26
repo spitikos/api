@@ -16,6 +16,10 @@ buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826044236-53ab66c982e8.
 buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826044236-53ab66c982e8.1/go.mod h1:GZR8HjU708M7+MM8sjAkGZY+anqq0PhYZif/ovQQIrs=
 buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826064211-0d5c0d70115a.1 h1:3VmOCEOzECehsLL4do7yAeQUdYmMh9cmQ3hFEcvFhj4=
 buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826064211-0d5c0d70115a.1/go.mod h1:mvB6B+sgIqyymWg01ZJBO6cdsq4aHfYJC4gRpK6HR9M=
+buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826072026-568905bdbf23.1 h1:ja0//zuuKvZELN9kHHkKm0RMY6b0c+joQ0J4vHZeluE=
+buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826072026-568905bdbf23.1/go.mod h1:xVIadjZNklOeAy5DWkWRfGgxSxO6dV1H3ob4oV+nUNc=
+buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826072133-ad09a0a8a00b.1 h1:BVg4Fw5ayRcmIQax10g5KZEJI5ByYC82laWCohn7D10=
+buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826072133-ad09a0a8a00b.1/go.mod h1:hbD6sEXPO09YshYoYqeD07HJupRvFLp5cVZUjqHRKac=
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250817022828-20bd09ecab35.1 h1:yByBaWOsg8j463/uI0THLssF2HOI25b6UY8p1MATB+Y=
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250817022828-20bd09ecab35.1/go.mod h1:Y4FOZMJ4sOXbDiDc1YT9orXcy9LwJ7/CjBf1wNs4GBw=
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250824145048-b94f08b81ed9.1 h1:TCLvU1D9L/bKwMq+nCeyPv+zcd4XY0KFeFthieVc2VE=
@@ -34,6 +38,10 @@ buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826044236-53ab66c9
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826044236-53ab66c982e8.1/go.mod h1:Y4FOZMJ4sOXbDiDc1YT9orXcy9LwJ7/CjBf1wNs4GBw=
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826064211-0d5c0d70115a.1 h1:ZRsC4EdCf0jNDiqMejGQn4RFaI/pgCzX7FyslekTapM=
 buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826064211-0d5c0d70115a.1/go.mod h1:Y4FOZMJ4sOXbDiDc1YT9orXcy9LwJ7/CjBf1wNs4GBw=
+buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826072026-568905bdbf23.1 h1:sdc5cQ5yfvli+3vAzzcq+UI/lcI7MrQ3UToa7PasqJg=
+buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826072026-568905bdbf23.1/go.mod h1:Y4FOZMJ4sOXbDiDc1YT9orXcy9LwJ7/CjBf1wNs4GBw=
+buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826072133-ad09a0a8a00b.1 h1:6wKpukbkxwWxtYPOCCZkRgmq2Qxf1pbyM/uAHXZZj04=
+buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826072133-ad09a0a8a00b.1/go.mod h1:Y4FOZMJ4sOXbDiDc1YT9orXcy9LwJ7/CjBf1wNs4GBw=
 connectrpc.com/connect v1.18.1 h1:PAg7CjSAGvscaf6YZKUefjoih5Z/qYkyaTrBW8xvYPw=
 connectrpc.com/connect v1.18.1/go.mod h1:0292hj1rnx8oFrStN7cB4jjVBeqs+Yx5yDIC2prWDO8=
 connectrpc.com/grpcreflect v1.3.0 h1:Y4V+ACf8/vOb1XOc251Qun7jMB75gCUNw6llvB9csXc=
