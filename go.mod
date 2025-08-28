@@ -3,21 +3,27 @@ module spitikos/api
 go 1.24.4
 
 require (
-	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250826072133-ad09a0a8a00b.1
-	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250826072133-ad09a0a8a00b.1
+	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250827204600-c6cde095821a.1
+	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250827204600-c6cde095821a.1
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpcreflect v1.3.0
+	github.com/google/go-github/v74 v74.0.0
 	github.com/lmittmann/tint v1.1.2
 	github.com/prometheus/client_golang v1.23.0
 	github.com/prometheus/common v0.65.0
+	github.com/redis/go-redis/v9 v9.12.1
 	github.com/spf13/viper v1.20.1
 	golang.org/x/net v0.40.0
+	golang.org/x/sync v0.14.0
 	google.golang.org/protobuf v1.36.6
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

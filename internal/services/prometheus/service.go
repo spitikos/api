@@ -3,6 +3,7 @@ package prometheus
 import (
 	"context"
 	"fmt"
+	prometheusclient "spitikos/api/internal/clients/prometheus"
 	"spitikos/api/internal/config"
 	"spitikos/api/internal/utils"
 	"time"
@@ -12,12 +13,12 @@ import (
 )
 
 type Service struct {
-	cfg    *config.Config
-	client *Client
+	cfg        *config.Config
+	prometheus *prometheusclient.Client
 }
 
 func New(cfg *config.Config) (*Service, error) {
-	client, err := NewClient(cfg)
+	client, err := prometheusclient.New(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Prometheus client: %w", err)
 	}
@@ -28,7 +29,7 @@ func (s *Service) Query(
 	ctx context.Context,
 	req *connect.Request[prometheuspb.QueryRequest],
 ) (*connect.Response[prometheuspb.QueryResponse], error) {
-	vector, err := s.client.Query(ctx, req.Msg.Query, time.Now())
+	vector, err := s.prometheus.Query(ctx, req.Msg.Query, time.Now())
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
 	}
@@ -41,7 +42,7 @@ func (s *Service) QueryRange(
 	ctx context.Context,
 	req *connect.Request[prometheuspb.QueryRangeRequest],
 ) (*connect.Response[prometheuspb.QueryRangeResponse], error) {
-	matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
+	matrix, err := s.prometheus.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 	if err != nil {
 		return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
 	}
@@ -55,7 +56,7 @@ func (s *Service) StreamQuery(
 	stream *connect.ServerStream[prometheuspb.StreamQueryResponse],
 ) error {
 	fetchFn := func(ctx context.Context) (*prometheuspb.StreamQueryResponse, error) {
-		vector, err := s.client.Query(ctx, req.Msg.Query, time.Now())
+		vector, err := s.prometheus.Query(ctx, req.Msg.Query, time.Now())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query: %w", err)
 		}
@@ -72,7 +73,7 @@ func (s *Service) StreamQueryRange(
 	stream *connect.ServerStream[prometheuspb.StreamQueryRangeResponse],
 ) error {
 	fetchFn := func(ctx context.Context) (*prometheuspb.StreamQueryRangeResponse, error) {
-		matrix, err := s.client.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
+		matrix, err := s.prometheus.QueryRange(ctx, req.Msg.Query, req.Msg.Since.AsTime())
 		if err != nil {
 			return nil, fmt.Errorf("failed to run Prometheus query range: %w", err)
 		}

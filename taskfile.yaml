@@ -1,6 +1,14 @@
 version: "3"
 
 tasks:
+  run:
+    desc: Run the main application.
+    dotenv: ["./config/config.env"]
+    cmds:
+      - telepresence connect
+      - go run ./cmd/server/main.go
+    silent: true
+
   buf:push:
     desc: Push the current proto files to the remote repository.
     cmds:

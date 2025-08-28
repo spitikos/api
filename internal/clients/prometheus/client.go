@@ -1,4 +1,4 @@
-package prometheus
+package prometheusclient
 
 import (
 	"context"
@@ -13,26 +13,26 @@ import (
 )
 
 type Client struct {
-	api v1.API
-	cfg *config.Config
+	client v1.API
+	cfg    *config.Config
 }
 
-func NewClient(cfg *config.Config) (*Client, error) {
+func New(cfg *config.Config) (*Client, error) {
 	client, err := api.NewClient(api.Config{
-		Address: cfg.Prometheus.Url,
+		Address: cfg.Prometheus.Address,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("Failed to initialize Prometheus client: %w", err)
 	}
 
 	return &Client{
-		api: v1.NewAPI(client),
-		cfg: cfg,
+		client: v1.NewAPI(client),
+		cfg:    cfg,
 	}, nil
 }
 
 func (c *Client) Query(ctx context.Context, query string, time time.Time) (model.Vector, error) {
-	res, wrn, err := c.api.Query(ctx, query, time)
+	res, wrn, err := c.client.Query(ctx, query, time)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (c *Client) Query(ctx context.Context, query string, time time.Time) (model
 }
 
 func (c *Client) QueryRange(ctx context.Context, query string, since time.Time) (model.Matrix, error) {
-	res, wrn, err := c.api.QueryRange(ctx, query, v1.Range{
+	res, wrn, err := c.client.QueryRange(ctx, query, v1.Range{
 		Start: since,
 		End:   time.Now(),
 		Step:  time.Second * time.Duration(c.cfg.Prometheus.QueryRangeStepSeconds),

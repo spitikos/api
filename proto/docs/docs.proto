@@ -4,6 +4,8 @@ package docs;
 
 option go_package = "github.com/spitikos/spitikos/api/proto/docs;docsv1";
 
+import "google/protobuf/timestamp.proto";
+
 // DocsService manages the documentation lifecycle.
 service DocsService {
   // Sync is triggered by a webhook. It receives a complete list of all
@@ -12,20 +14,16 @@ service DocsService {
 
   // GetSlugs retrieves a list of all available document slugs from the cache.
   rpc GetSlugs(GetSlugsRequest) returns (GetSlugsResponse) {}
+
+  rpc GetDoc(GetDocRequest) returns (GetDocResponse) {}
 }
 
-// SyncRequest contains the complete list of all current document slugs.
 message SyncRequest {
-  // The complete list of slugs (e.g., "architecture-overview", "pi-setup").
-  repeated string slugs = 1;
+  repeated string paths = 1;
 }
 
-// SyncResponse is a simple response to acknowledge the sync.
 message SyncResponse {
-  // Indicates whether the sync request was successfully received.
-  bool success = 1;
-  // A descriptive message about the result of the operation.
-  string message = 2;
+  map<string, SyncStatus> status = 1; // slug -> status
 }
 
 // GetSlugsRequest is the request message for the GetSlugs RPC.
@@ -35,4 +33,25 @@ message GetSlugsRequest {}
 message GetSlugsResponse {
   // The list of all slugs currently available in the cache.
   repeated string slugs = 1;
+}
+
+message GetDocRequest {
+  string slug = 1;
+}
+
+message GetDocResponse {
+  Doc doc = 1;
+}
+
+message SyncStatus {
+  bool GetContent = 1;
+  bool GetLatestCommit = 2;
+  bool MarshalDoc = 3;
+  bool CacheDoc = 4;
+}
+
+message Doc {
+  string title = 1;
+  google.protobuf.Timestamp modified = 2;
+  string content = 3;
 }
