@@ -6,15 +6,9 @@ option go_package = "github.com/spitikos/spitikos/api/proto/docs;docsv1";
 
 import "google/protobuf/timestamp.proto";
 
-// DocsService manages the documentation lifecycle.
 service DocsService {
-  // Sync is triggered by a webhook. It receives a complete list of all
-  // current document slugs, fetches their content, and updates the cache.
   rpc Sync(SyncRequest) returns (SyncResponse) {}
-
-  // GetSlugs retrieves a list of all available document slugs from the cache.
   rpc GetSlugs(GetSlugsRequest) returns (GetSlugsResponse) {}
-
   rpc GetDoc(GetDocRequest) returns (GetDocResponse) {}
 }
 
@@ -23,15 +17,12 @@ message SyncRequest {
 }
 
 message SyncResponse {
-  map<string, SyncStatus> status = 1; // slug -> status
+  map<string, SyncStatus> status = 1;
 }
 
-// GetSlugsRequest is the request message for the GetSlugs RPC.
 message GetSlugsRequest {}
 
-// GetSlugsResponse contains the list of all document slugs.
 message GetSlugsResponse {
-  // The list of all slugs currently available in the cache.
   repeated string slugs = 1;
 }
 

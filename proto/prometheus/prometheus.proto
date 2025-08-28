@@ -4,94 +4,58 @@ package prometheus;
 
 import "google/protobuf/timestamp.proto";
 
-// PrometheusService provides a gRPC interface for querying a Prometheus backend.
 service PrometheusService {
-  // Query performs an instant query at a single point in time.
   rpc Query(QueryRequest) returns (QueryResponse) {}
-
-  // QueryRange performs a query over a range of time.
   rpc QueryRange(QueryRangeRequest) returns (QueryRangeResponse) {}
-
-  // StreamQuery performs an instant query and streams the results back.
-  // This is useful for large responses that can be processed in chunks.
   rpc StreamQuery(StreamQueryRequest) returns (stream StreamQueryResponse) {}
-
-  // StreamQueryRange performs a range query and streams the results back.
   rpc StreamQueryRange(StreamQueryRangeRequest) returns (stream StreamQueryRangeResponse) {}
 }
 
-// QueryRequest is the request for an instant query.
 message QueryRequest {
-  // The PromQL query string.
   string query = 1;
 }
 
-// StreamQueryRequest is the request for a streaming instant query.
 message StreamQueryRequest {
-  // The PromQL query string.
   string query = 1;
 }
 
-// QueryResponse is the response for an instant query.
 message QueryResponse {
-  // The resulting data from the query.
   repeated Sample data = 1;
 }
 
-// StreamQueryResponse is a chunk of a streaming instant query response.
 message StreamQueryResponse {
-  // A chunk of the resulting data from the query.
   repeated Sample data = 1;
 }
 
-// QueryRangeRequest is the request for a range query.
 message QueryRangeRequest {
-  // The PromQL query string.
   string query = 1;
-  // The start time for the query range.
   google.protobuf.Timestamp since = 2;
 }
 
-// StreamQueryRangeRequest is the request for a streaming range query.
 message StreamQueryRangeRequest {
-  // The PromQL query string.
   string query = 1;
-  // The start time for the query range.
   google.protobuf.Timestamp since = 2;
 }
 
-// QueryRangeResponse is the response for a range query.
 message QueryRangeResponse {
-  // The resulting time series data.
   repeated SampleStream data = 1;
 }
 
-// StreamQueryRangeResponse is a chunk of a streaming range query response.
 message StreamQueryRangeResponse {
-  // A chunk of the resulting time series data.
   repeated SampleStream data = 1;
 }
 
-// Value represents a single data point in time.
 message Value {
-  // The timestamp of the data point.
   google.protobuf.Timestamp timestamp = 1;
-  // The value of the data point.
   double value = 2;
 }
 
-// Sample represents a single data point for an instant query.
 message Sample {
-  // A map of metric labels (e.g., "job", "instance").
   map<string, string> metric = 1;
-  // The single value for this sample.
   Value value = 2;
 }
 
-// SampleStream represents a full time series for a range query.
 message SampleStream {
-  // A map of metric labels that identify the time series.
   map<string, string> metric = 1;
-  // The list of data points over the queried time range.
   repeated Value values = 2;
 }

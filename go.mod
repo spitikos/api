@@ -3,8 +3,8 @@ module spitikos/api
 go 1.24.4
 
 require (
-	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250827204600-c6cde095821a.1
-	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250827204600-c6cde095821a.1
+	buf.build/gen/go/spitikos/api/connectrpc/go v1.18.1-20250828193138-e75a871f55a6.1
+	buf.build/gen/go/spitikos/api/protocolbuffers/go v1.36.2-20250828193138-e75a871f55a6.1
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/google/go-github/v74 v74.0.0
