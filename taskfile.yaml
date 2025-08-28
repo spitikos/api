@@ -20,3 +20,8 @@ tasks:
     cmds:
       - buf lint
     silent: true
+
+  secret:
+    dotenv: ["./config/config.env"]
+    cmds:
+      - kubectl create secret generic api-github-token --from-literal=GITHUB_TOKEN=$GITHUB_TOKEN -n api
