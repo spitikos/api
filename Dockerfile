@@ -12,7 +12,7 @@ COPY --from=deps /go/pkg/mod /go/pkg/mod
 COPY . .
 RUN go build -o /bin/server ./cmd/server
 
-FROM gcr.io/distroless/static-debian12 AS runner
+FROM golang:1.24-alpine AS runner
 COPY --from=builder /bin/server /
 EXPOSE 50051
 CMD ["/server"]
