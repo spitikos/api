@@ -2,7 +2,7 @@ server:
   port: 50051
   streamIntervalSeconds: 5
 prometheus:
-  address: https://prometheus.spitikos.dev
+  address: https://prometheus.taehoonlee.cloud
   queryRangeStepSeconds: 15
 redis:
   address: redis-master.redis.svc.cluster.local:6379
