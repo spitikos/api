@@ -6,22 +6,21 @@ import (
 	"net/http"
 	"os"
 	"spitikos/api/internal/config"
-	"spitikos/api/internal/logger"
 	"spitikos/api/internal/services/docs"
 	"spitikos/api/internal/services/hello"
 	"spitikos/api/internal/services/prometheus"
+	"time"
 
 	"buf.build/gen/go/spitikos/api/connectrpc/go/docs/docsconnect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/hello/helloconnect"
 	"buf.build/gen/go/spitikos/api/connectrpc/go/prometheus/prometheusconnect"
 	"connectrpc.com/grpcreflect"
+	"github.com/lmittmann/tint"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
 
 func main() {
-	logger.Init()
-
 	cfg, err := config.New()
 	if err != nil {
 		slog.Error("failed to load config", slog.Any("error", err))
@@ -74,4 +73,15 @@ func main() {
 	if err := s.ListenAndServe(); err != nil {
 		slog.Error("failed to listen and serve", slog.Any("error", err))
 	}
+}
+
+func init() {
+	w := os.Stderr
+
+	slog.SetDefault(slog.New(
+		tint.NewHandler(w, &tint.Options{
+			Level:      slog.LevelDebug,
+			TimeFormat: time.Kitchen,
+		}),
+	))
 }
